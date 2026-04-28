@@ -127,7 +127,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Claude Code Usage Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="/chart.umd.min.js"></script>
 <style>
   :root {
     --bg: #0f1117;
@@ -742,7 +742,7 @@ function applyFilter() {
 
   // Hourly aggregation (filtered by model + range, then bucketed by UTC hour)
   const hourlySrc = (rawData.hourly_by_model || []).filter(r =>
-    selectedModels.has(r.model) && (!cutoff || r.day >= cutoff)
+    selectedModels.has(r.model) && (!start || r.day >= start) && (!end || r.day <= end)
   );
   const hourlyAgg = aggregateHourly(hourlySrc, hourlyTZ);
 
@@ -1218,6 +1218,7 @@ async function loadData() {
     applyFilter();
   } catch(e) {
     console.error(e);
+    document.body.innerHTML = '<div style="color:red;padding:40px;font-size:18px;font-family:monospace">ERROR: ' + e.message + '<br><br>' + e.stack + '</div>';
   }
 }
 
@@ -1256,6 +1257,19 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
             self.wfile.write(body)
+
+        elif self.path == "/chart.umd.min.js":
+            chart_path = Path(__file__).parent / "chart.umd.min.js"
+            if chart_path.exists():
+                body = chart_path.read_bytes()
+                self.send_response(200)
+                self.send_header("Content-Type", "application/javascript")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+            else:
+                self.send_response(404)
+                self.end_headers()
 
         else:
             self.send_response(404)

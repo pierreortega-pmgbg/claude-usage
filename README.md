@@ -3,6 +3,10 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 [![claude-code](https://img.shields.io/badge/claude--code-black?style=flat-square)](https://claude.ai/code)
 
+> **Fork of [phuryn/claude-usage](https://github.com/phuryn/claude-usage) by Paweł Huryn** — I use Claude Code daily as part of an AI-native PM workflow and wanted full visibility into token costs, cache efficiency, and session patterns. This fork includes a bugfix for a JS scoping error that caused the dashboard to silently fail on load.
+>
+> My cache hit rate runs at ~96% — a side effect of keeping a static system prompt and routing dynamic context through subagents. This dashboard is how I know that.
+
 **Pro and Max subscribers get a progress bar. This gives you the full picture.**
 
 Claude Code writes detailed usage logs locally — token counts, models, sessions, projects — regardless of your plan. This dashboard reads those logs and turns them into charts and cost estimates. Works on API, Pro, and Max plans.
